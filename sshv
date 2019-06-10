@@ -1,0 +1,10 @@
+#!/bin/bash
+#note - dash is important as bash masks some env vars!
+
+SSHV_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+#abuse the ssh convention to forwars all shell variables with name LC_*
+export LC_ENV=`set | grep -v -f ${SSHV_DIR}/exclude.conf | base64 -w 0`
+export LC_PWD=`pwd`
+
+exec ssh -t $@ -- ${SSHV_DIR}/restore_env.sh
